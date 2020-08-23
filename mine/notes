@@ -1,0 +1,136 @@
+
+
+### 1
+to set an environment variable to the file that we want to be our flask application
+export FLASK_APP=flaskblog.py # for mac/linux
+set FLASK_APP=flaskblog.py # for windows
+
+# run the application
+flask run
+
+# to make app listening. allows to refresh the page and see the changes applied instead of
+# rebooting application
+export FLASK_DEBUG=1
+
+python flaskblog.py
+
+# doesn't work yet, let's add
+http://localhost:5000/about
+
+### 3
+# wtf (wt forms)
+pip install flask-wtf 
+
+generated secret key for the application with running in terminal:
+python
+import secrets
+secrets.token_hex(16)
+output: '12b983b98d350524b6d1866fab95a980'
+
+* secret key protects against modifying cookies, cross-side request forgery attacks etc.
+
+### 4
+pip install flask-sqlalchemy
+
+# in terminal:
+python
+from flaskblog import db
+db.create_all()
+from flaskblog import User, Post
+# create a user
+user_1 = User(username='Corey', email='C@demo.com', password='password')
+# add user to database
+db.session.add(user_1)
+user_2 = User(username='JohnDoe', email='jd@demo.com', password='password')
+db.session.add(user_2)
+# commit changes to the database
+db.session.commit()
+# get all our users
+User.query.all()
+# get first user
+User.query.first()
+User.query.filter_by(username='Corey').all()
+User.query.filter_by(username='Corey').first()
+user = User.query.filter_by(username='Corey').first()
+user = User.query.get(1)
+user.posts
+post_1 = Post(title='Blog 1', content='First Post Content!', user_id=user.id)
+post_2 = Post(title='Blog 2', content='Second Post Content!', user_id=user.id)
+db.session.add(post_1)
+db.session.add(post_2)
+db.session.commit()
+user.posts
+
+# in terminal
+for post in user.posts:
+	print(post.title)
+
+post = Post.query.first()
+post
+post.user_id
+post.author
+# drops all database tables
+db.drop_all()
+# recreates the same structure of db but empty
+db.create_all()
+# check
+User.query.all()
+Post.query.all()
+
+### 5
+# add models.py
+- move 2 classes User and Post to models.py
+- add "from models import User, Post" to flaskblog.py
+
+in terminal:
+python
+from flaskblog import db
+# delete site.db and try now to recreate it from command line
+from flaskblog import db # doesn't work yet
+
+python
+from flaskblog import db
+from flaskblog.models import User, Post
+db.create_all()
+User.query.all()
+exit()
+
+### Order of files running (at least at this stage) ###
+1) run.py
+2) __init__.py
+3) routes.py
+4) forms.py
+5) models.py
+
+### 6
+pip install flask-bcrypt
+python
+from flask_bcrypt import Bcrypt
+bcrypt = Bcrypt()
+bcrypt.generate_password_hash('testing')
+bcrypt.generate_password_hash('testing').decode('utf-8')
+hashed_pw = bcrypt.generate_password_hash('testing').decode('utf-8')
+bcrypt.check_password_hash(hashed_pw, 'password')
+bcrypt.check_password_hash(hashed_pw, 'testing')
+
+from flaskblog import db
+from flaskblog.models import User
+user = User.query.first()
+user
+user.password
+
+pip install flask-login
+
+### 7
+
+
+### 8
+
+
+
+
+
+
+
+
+
